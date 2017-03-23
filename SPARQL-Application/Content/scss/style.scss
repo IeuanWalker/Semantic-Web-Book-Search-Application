@@ -1,0 +1,60 @@
+//Compass reset file
+@import 'compass';
+@import 'breakpoint';
+@import 'singularitygs';
+
+//I created
+@import 'helpers/**/*';
+@import 'base/**/*';
+@import 'layout/**/*';
+@import 'components/**/*';
+@import 'pages/**/*';
+
+
+.hidden { display: none; }
+.readmore { margin: 0 5px;}
+
+
+.loader,
+.loader:after {
+  	border-radius: 50%;
+  	width: 10em;
+  	height: 10em;
+}
+.loader {
+	margin: 60px auto;
+	font-size: 10px;
+	position: relative;
+	text-indent: -9999em;
+	border-top: 1.1em solid rgba(211,211,211, 0.7);
+	border-right: 1.1em solid rgba(211,211,211, 0.7);
+	border-bottom: 1.1em solid rgba(211,211,211, 0.7);
+	border-left: 1.1em solid $secondary-colour;
+	@include transform(translateZ(0));
+	@include animation(load8 1.1s infinite linear);
+}
+@-webkit-keyframes load8 {
+	0% {
+		@include transform(rotate(0deg));
+	}
+	100% {
+		@include transform(rotate(360deg));
+	}
+}
+@keyframes load8 {
+	0% {
+		@include transform(rotate(0deg));
+	}
+	100% {
+		@include transform(rotate(360deg));
+	}
+}
+
+
+
+#spinner{
+	margin: 0 auto;
+	display: block;
+	overflow: hidden;
+}
+

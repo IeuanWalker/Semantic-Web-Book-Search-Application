@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SPARQL_Application.Models.BookAuthorDetails>
+
+
+@if(Model == null || Model.Count() <= 0){
+    ViewBag.Title = "Author Details not found";
+}
+else
+{
+    ViewBag.Title = "Author: " + Model.First().AuthorName;
+}
+
+
+<div class="container">
+    <div class="authorDetials">
+        @if (Model == null || Model.Count() <= 0)
+        {
+            <p>Sorry something went wrong :/. Could not find information for this author.</p>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <header class="authorDetailsHeader">
+                    <div>
+                        <h1>@item.AuthorName</h1>
+                        <small>was born in @item.PlaceOfBirth</small>
+                    </div>
+                </header>
+                <div id="map_canvas" class="map" style="width:100%; height:auto; min-height: 300px; margin-top: 30px"></div>
+
+                <p><strong>@item.AuthorName</strong> has written <strong>@item.AuthorBooks.Count()</strong> books. Go check them out below.</p>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Number of pages</th>
+                    </tr>
+                    @foreach (var item1 in item.AuthorBooks)
+                    {
+                        <tr>
+                            <td class="hoverEffect">@Html.ActionLink(@item1.Name, "BookDetails", new { bookLink = @item1.BookLink, authorLink = @item1.AuthorDetails.AuthorLink })</td>
+                            <td>
+                                @if (item1.NumberOfPages == 0)
+                                {
+                                    <div>n/a</div>
+                                }
+                                else
+                                {
+                                    @item1.NumberOfPages
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+                <div class="lastUpdated">
+                    <p>Last updated: @item.dataAndTime</p>
+                </div>
+
+                @section scripts {
+                    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAx6Fn2fua4eLpCnVCRUvfWbGEdLOQ2Hgw"></script>
+                    <script>drawMap(@item.Latitude, @item.Longitude);</script>
+                }
+            }
+        }
+    </div>
+
+</div>

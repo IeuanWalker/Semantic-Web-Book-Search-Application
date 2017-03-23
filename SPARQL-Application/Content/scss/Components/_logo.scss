@@ -1,0 +1,16 @@
+.logo {
+	a{
+	font-family: 'Passion One', cursive;
+	color: $dark-colour;
+	font-size: 22px;
+	font-weight: 200px;
+		span{
+			font-size: 30px;
+			font-weight: 900;
+		}
+	}
+	a:hover{
+		text-decoration: none;
+		cursor: crosshair;
+	}
+}

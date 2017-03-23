@@ -1,0 +1,11 @@
+.lastUpdated{
+	float: right;
+	p{
+		background-color: $primary-colour; 
+        overflow: hidden;
+        display: inline-block;
+        color: #fff;
+        padding: 10px;
+        line-height: 1;
+	}
+}

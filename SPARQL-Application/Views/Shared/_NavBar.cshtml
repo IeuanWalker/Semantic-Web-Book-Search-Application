@@ -1,0 +1,24 @@
+﻿<div class="header">
+	<div class="logo-holder">
+		<div class="logo"><a href="@Url.Action("index", "home")">WebMantic<span>.</span></a></div>
+	</div>
+	<div class="hero">
+		<div class="header-content">
+			<h1><span>Book Search Application</span></h1>
+			<div class="text-container">
+				<p class="lead">This application uses semantic web technology to gather the relevant data used within this application. Find out more with the link below.</p>
+			</div>
+			<p><a href="https://www.w3.org/standards/semanticweb/" target="_blank" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+		</div>
+	</div>
+
+	<div class="control" tabindex="1">
+		<div class="searchBtn"></div>
+		<i class="icon-search fa fa-search" aria-hidden="true"></i>
+	</div>
+</div>
+
+<i class="icon-close fa fa-times" aria-hidden="true"></i>
+<form asp-controller="Home" asp-action="Index" class="form">
+	<input class="input-search" type="text" name="id" placeholder="Search...">
+</form>

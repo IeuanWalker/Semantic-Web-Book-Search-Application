@@ -1,0 +1,23 @@
+/*-------------
+  Author details - Page
+-------------*/
+
+
+.authorDetailsHeader{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	div{
+		h1{
+			font-family: 'Lato', 'Arial', sans-serif;
+			font-size: 3rem;
+			text-align: center;
+			display: block;
+			line-height: 1;
+		}
+		small{
+			float: right;
+
+		}
+	}
+}

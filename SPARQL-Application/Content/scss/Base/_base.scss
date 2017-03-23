@@ -1,0 +1,82 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    letter-spacing: .2px;
+    color: #2d2d2d;
+}
+
+.container{
+	max-width: 900px;
+	width: 100%;
+	height: 100%;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin: 0 auto;
+}
+
+
+
+.pagination > li > a{
+	color: $primary-colour;
+}
+.pagination > li > a:hover{
+	color: $secondary-colour;
+}
+
+.body-content{
+	padding-bottom: 60px;
+}
+
+
+
+th{
+	font-weight: bold;
+}
+
+
+.hoverEffect a{
+	position: relative;
+	text-decoration: none;
+	color: #000;
+	text-decoration: none !important;
+	padding: 2px 0;
+	transition: color 0.3s;
+	&:hover,
+	&:focus{
+		color: $primary-colour;
+		outline: none;
+		text-decoration: none;
+	}
+	&::after{
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		height: 3px;
+		background: $primary-colour;
+		content: '';
+		opacity: 0;
+		-webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+		-moz-transition: opacity 0.3s, -moz-transform 0.3s;
+		transition: opacity 0.3s, transform 0.3s;
+		-webkit-transform: translateY(10px);
+		-moz-transform: translateY(10px);
+		transform: translateY(10px);
+	}
+	&:hover::after,
+	&:focus::after{
+		opacity: 1;
+		-webkit-transform: translateY(0px);
+		-moz-transform: translateY(0px);
+		transform: translateY(0px);
+	}
+}

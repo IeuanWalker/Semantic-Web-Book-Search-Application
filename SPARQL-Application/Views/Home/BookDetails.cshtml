@@ -1,0 +1,67 @@
+﻿@model IEnumerable<SPARQL_Application.Models.BookDetails>
+
+@if(Model == null || Model.Count() <= 0){
+    ViewBag.Title = "Books Details not found";
+}
+else
+{
+    ViewBag.Title = "Book: " + Model.First().Name;
+}
+
+
+
+
+<div class="container">
+    <div class="bookDetails">
+        @if (Model == null || Model.Count() <= 0)
+        {
+            <p>Ooops sorry something went wrong :/. Could not find information on this book.</p>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <header class="bookDetailsHeader">
+                    <div>
+                        <h1>@item.Name</h1>
+                        <small>Written by <span class="hoverEffect">@Html.ActionLink(@item.AuthorDetails.AuthorName, "authorDetails", new { authorLink = @item.AuthorDetails.AuthorLink })</span></small>
+                    </div>
+                </header>
+                <p>
+                    <strong>@item.Name</strong> was written by <strong class="hoverEffect">@Html.ActionLink(@item.AuthorDetails.AuthorName, "authorDetails", new { authorLink = @item.AuthorDetails.AuthorLink })</strong>
+                    @if (!(@item.NumberOfPages == 0))
+                    {
+                        <text>and it has </text><strong>@item.NumberOfPages</strong> <text>pages.</text>
+                    }
+                </p>
+                <p>@item.Abstract</p>
+                <p><strong class="hoverEffect">@Html.ActionLink(@item.AuthorDetails.AuthorName, "authorDetails", new { authorLink = @item.AuthorDetails.AuthorLink })</strong> has written <strong>@item.AuthorDetails.AuthorBooks.Count()</strong> books. Check them out below. </p>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Number of pages</th>
+                    </tr>
+                    @foreach (var item1 in item.AuthorDetails.AuthorBooks)
+                    {
+                        <tr>
+                            <td class="hoverEffect">@Html.ActionLink(@item1.Name, "BookDetails", new { bookLink = @item1.BookLink, authorLink = @item1.AuthorDetails.AuthorLink })</td>
+                            <td>
+                                @if (item1.NumberOfPages == 0)
+                                {
+                                    <small>n/a</small>
+                                }
+                                else
+                                {
+                                    @item1.NumberOfPages
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+                <div class="lastUpdated">
+                    <p>Last updated: @item.AuthorDetails.dataAndTime</p>
+                </div>
+            }
+        }
+    </div>
+</div>

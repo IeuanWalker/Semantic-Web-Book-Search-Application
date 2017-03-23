@@ -1,0 +1,120 @@
+
+body {
+    &.mode-search {
+        overflow: hidden;
+        .form,
+        .icon-close {
+            transform: none;
+            pointer-events: all;
+            opacity: 1;
+            z-index: 11;
+        }
+        .control {
+            .icon-search {
+                opacity: 0;
+            }
+            .searchBtn {
+                transform: scale(70);
+            }
+        }
+    }
+}
+
+
+.control {
+    position: absolute;
+    right: 20px;
+    bottom: -25px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .icon-search,
+    .icon-close {
+        @include transition(.2s ease-in-out);
+    }
+    &:hover .searchBtn {
+        @include box-shadow(0 10px 20px rgba(0,0,0,.19),0 6px 6px rgba(0,0,0,.23));
+    }
+}
+
+/* Button */
+
+
+.searchBtn {
+    z-index: 10;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    padding: 20px;
+    @include transition(all .7s cubic-bezier(.4, 0, .2, 1));
+    border-radius: 100%;
+    outline: 0;
+    background: $secondary-colour;
+    @include box-shadow(0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23));
+    &:hover{
+        color: $dark-colour;
+    }
+}
+
+@include breakpoint(600px){
+    .control{
+        right: 50px;
+        width: 64px;
+        height: 64px;
+    }
+    .searchBtn{
+        width: 64px;
+        height: 64px;        
+    }
+}
+
+.icon-search {
+    font-size: 18px;
+    color: #fff;
+    z-index: 10;
+    @include transition(all 1s ease-in-out);
+}
+
+.icon-close {
+    font-size: 80px;
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    @include transition(all .3s ease-in-out);
+    @include transform(translate( 10px, 0) rotate(90deg));
+    opacity: 0;
+    color: #fff;
+    z-index: 99;
+}
+
+
+.form {
+    position: fixed;
+    top: 50%;
+    left: 50px;
+    height: 80px;
+    margin-top: -40px;
+    transition: all .3s ease-in-out;
+    transform: translate( 40px, 0);
+    pointer-events: none;
+    opacity: 0;
+    input {
+        font-size: 54px;
+        font-weight: 200;
+        color: #fff;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        -webkit-appearance: none;
+        text-shadow: 0px 0px 0px #000;
+        @include input-placeholder {
+            opacity: 1;
+            color: #ccc;
+            text-shadow: none;
+            -webkit-text-fill-color: initial;
+        }
+    }
+}

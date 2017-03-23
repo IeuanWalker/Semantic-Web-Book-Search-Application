@@ -1,0 +1,51 @@
+﻿@model PagedList.IPagedList<SPARQL_Application.Models.BookUserSearch>
+@using PagedList.Mvc;
+
+@{var searchfor = Request.Params["id"];}
+@if(searchfor.IsEmpty()){
+    ViewBag.Title = "Home Page";
+}
+else
+{
+    ViewBag.Title = "Searched for: " + searchfor;
+}
+
+<div class="container">
+    @if (Model == null || Model.TotalItemCount <= 0)
+    {
+        <p>Sorry no results for <strong>@searchfor</strong></p>
+    }
+    else
+    {
+        if (searchfor != null)
+        {
+            <p>Their are <strong>@Model.TotalItemCount</strong> results for <strong>@searchfor</strong></p>
+        }
+        else
+        {
+            <p>Recently searched</p>
+        }
+
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Author</th>
+                <th>Last Updated</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="hoverEffect">@Html.ActionLink(@item.Name, "BookDetails", new { bookLink = @item.BookLink, authorLink = @item.AuthorLink})</td>
+                    <td class="hoverEffect">@Html.ActionLink(@item.Author, "AuthorDetails", new { authorLink = @item.AuthorLink})</td>
+                    <td>@item.dataAndTime</td>
+                </tr>
+            }
+        </table>
+        if (@Model.Count() < @Model.TotalItemCount)
+        {
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize }))
+        }
+    }
+
+</div>
