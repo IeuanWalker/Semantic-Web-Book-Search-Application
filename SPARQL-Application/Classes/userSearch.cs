@@ -8,13 +8,13 @@ namespace SPARQL_Application.Classes
     public class UserSearch
     {
         private readonly BookDBContext db = new BookDBContext();
-        int minutesOld = -2;
+        private int minutesOld = -2;
+
         public void search(string searchString)
         {
             //Checks if item has been searched before
             if (db.bookNameTable.Any(o => o.SearchedFor.Equals(searchString)))
             {
-
                 var queryDate = from BNT in db.bookNameTable
                                 where BNT.SearchedFor == searchString
                                 select BNT;
@@ -22,7 +22,6 @@ namespace SPARQL_Application.Classes
                 var dateTimeNow = DateTime.Now;
                 var dateTimeOldest = dateTimeNow.AddMinutes(minutesOld);
                 var dateTimeSearch = queryDate.FirstOrDefault().dataAndTime;
-
 
                 //Check the date
                 if (dateTimeSearch <= dateTimeNow && dateTimeSearch >= dateTimeOldest)
@@ -65,6 +64,7 @@ namespace SPARQL_Application.Classes
                 LoopValuesToDatabase(searchString, resultSet);
             }
         }
+
         private void LoopValuesToDatabase(String searchString, SparqlResultSet resultSet)
         {
             foreach (SparqlResult result in resultSet)
@@ -74,7 +74,6 @@ namespace SPARQL_Application.Classes
                 String authorLink = result["authorLink"].ToString();
                 String author = result["author"].ToString();
 
-
                 //remove the @en
                 name = utilities.RemoveLast3Cahracters(name);
                 author = utilities.RemoveLast3Cahracters(author);
@@ -82,6 +81,7 @@ namespace SPARQL_Application.Classes
                 AddToDatabase(searchString, name, authorLink, author, bookLink);
             }
         }
+
         private void AddToDatabase(String search, String name, String authorlink, String author, String bookLink)
         {
             //Create new BookName object
@@ -107,7 +107,6 @@ namespace SPARQL_Application.Classes
                 Console.WriteLine("error adding to database");
                 Console.WriteLine(e);
             }
-
         }
     }
 }
