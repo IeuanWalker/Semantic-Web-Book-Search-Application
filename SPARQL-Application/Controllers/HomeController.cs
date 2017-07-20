@@ -16,9 +16,9 @@ namespace SPARQL_Application.Controllers
         private readonly BookDbContext _db = new BookDbContext();
 
         //Access to different search methods
-        private UserSearch _userSearch = new UserSearch();
+        private readonly UserSearch _userSearch = new UserSearch();
 
-        private AuthorDetailsSearch _authorSearch = new AuthorDetailsSearch();
+        private readonly AuthorDetailsSearch _authorSearch = new AuthorDetailsSearch();
 
         //Different page requests
         public async Task<ActionResult> Index(string id = null, int page = 1, int pageSize = 10)

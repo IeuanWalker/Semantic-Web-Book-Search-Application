@@ -64,12 +64,14 @@ namespace SPARQL_Application.Classes
         private void LoopValuesToDatabase(SparqlResultSet resultSetAuthorDetails, SparqlResultSet resultSetAuthorBooks)
         {
             if (resultSetAuthorDetails.IsEmpty && resultSetAuthorBooks.IsEmpty)
+            {
                 return;
+            }
             string authorLink = resultSetAuthorDetails.Last()["authorLink"].ToString();
             string authorName = resultSetAuthorDetails.Last()["authorName"].ToString();
             string placeOfBirthLink = resultSetAuthorDetails.Last()["placeOfBirthLink"].ToString();
             string placeOfBirth = resultSetAuthorDetails.Last()["PlaceOfBirth"].ToString();
-            string stringLatitude = resultSetAuthorDetails.Last().Value("latitude").ToString(); // ["latitude"]["value"].ToString());
+            string stringLatitude = resultSetAuthorDetails.Last().Value("latitude").ToString();
             string stringLongitude = resultSetAuthorDetails.Last().Value("longitude").ToString();
 
             //Convert latitude and longitude to float
