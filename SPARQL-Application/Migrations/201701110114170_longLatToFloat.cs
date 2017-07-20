@@ -3,7 +3,7 @@ namespace SPARQL_Application.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class longLatToFloat : DbMigration
+    public partial class LongLatToFloat : DbMigration
     {
         public override void Up()
         {

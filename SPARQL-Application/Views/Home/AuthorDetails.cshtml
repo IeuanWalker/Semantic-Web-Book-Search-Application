@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<SPARQL_Application.Models.BookAuthorDetails>
 
 
-@if(Model == null || Model.Count() <= 0){
+@if(Model == null || !Model.Any()){
     ViewBag.Title = "Author Details not found";
 }
 else
@@ -12,7 +12,7 @@ else
 
 <div class="container">
     <div class="authorDetials">
-        @if (Model == null || Model.Count() <= 0)
+        @if (Model == null || !Model.Any())
         {
             <p>Sorry something went wrong :/. Could not find information for this author.</p>
         }
@@ -52,7 +52,7 @@ else
                     }
                 </table>
                 <div class="lastUpdated">
-                    <p>Last updated: @item.dataAndTime</p>
+                    <p>Last updated: @item.DataAndTime</p>
                 </div>
 
                 @section scripts {

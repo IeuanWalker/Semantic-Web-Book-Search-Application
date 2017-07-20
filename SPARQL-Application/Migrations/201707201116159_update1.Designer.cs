@@ -7,13 +7,13 @@ namespace SPARQL_Application.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class LongLatToFloat : IMigrationMetadata
+    public sealed partial class update1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(LongLatToFloat));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(update1));
         
         string IMigrationMetadata.Id
         {
-            get { return "201701110114170_longLatToFloat"; }
+            get { return "201707201116159_update1"; }
         }
         
         string IMigrationMetadata.Source

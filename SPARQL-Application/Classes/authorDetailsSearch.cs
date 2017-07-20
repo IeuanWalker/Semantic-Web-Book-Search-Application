@@ -7,22 +7,23 @@ using VDS.RDF.Query;
 
 namespace SPARQL_Application.Classes
 {
-    public class authorDetailsSearch
+    public class AuthorDetailsSearch
     {
-        private readonly BookDBContext db = new BookDBContext();
-        int minutesOld = -2;
-        public void search(string authorLink)
+        private readonly BookDbContext _db = new BookDbContext();
+        private readonly int _minutesOld = -2;
+
+        public void Search(string authorLink)
         {
             //Checks if the author is in the database
-            if (db.authorDetailsTable.Any(o => o.AuthorLink.Equals(authorLink)))
+            if (_db.AuthorDetailsTable.Any(o => o.AuthorLink.Equals(authorLink)))
             {
-                var queryDate = from items in db.authorDetailsTable
+                var queryDate = from items in _db.AuthorDetailsTable
                                 where items.AuthorLink == authorLink
                                 select items;
 
                 var dateTimeNow = DateTime.Now;
-                var dateTimeOldest = dateTimeNow.AddMinutes(minutesOld);
-                var dateTimeSearch = queryDate.FirstOrDefault().dataAndTime;
+                var dateTimeOldest = dateTimeNow.AddMinutes(_minutesOld);
+                var dateTimeSearch = queryDate.FirstOrDefault().DataAndTime;
 
                 //Check the date
                 if (dateTimeSearch <= dateTimeNow && dateTimeSearch >= dateTimeOldest)
@@ -33,29 +34,25 @@ namespace SPARQL_Application.Classes
                 {
                     //Information in database is too old, need newer information
                     //Delete current information
-                    var authors = from b in db.authorDetailsTable select b;
+                    var authors = from b in _db.AuthorDetailsTable select b;
                     authors = authors.Where(s => s.AuthorLink.Equals(authorLink));
                     foreach (BookAuthorDetails i in authors)
                     {
-                        db.authorDetailsTable.Remove(db.authorDetailsTable.Find(i.AuthorID));
+                        _db.AuthorDetailsTable.Remove(_db.AuthorDetailsTable.Find(i.AuthorId));
                     }
-                    db.SaveChanges();
+                    _db.SaveChanges();
 
                     //Request new information
-                    SparqlResultSet resultSetAuthorDetails = utilities.QueryDbpedia(utilities.QueryAuthorDetails(authorLink));
-                    SparqlResultSet resultSetAuthorBooks= utilities.QueryDbpedia(utilities.QueryAuthorBooks(authorLink));
+                    SparqlResultSet resultSetAuthorDetails = Utilities.QueryDbpedia(Utilities.QueryAuthorDetails(authorLink));
+                    SparqlResultSet resultSetAuthorBooks = Utilities.QueryDbpedia(Utilities.QueryAuthorBooks(authorLink));
 
                     LoopValuesToDatabase(resultSetAuthorDetails, resultSetAuthorBooks);
-                }
-                else if (dateTimeSearch > dateTimeNow)
-                {
-                    Console.WriteLine("ERROR: Database information is new than possible");
                 }
             }
             else
             {
-                SparqlResultSet resultSetAuthorDetails = utilities.QueryDbpedia(utilities.QueryAuthorDetails(authorLink));
-                SparqlResultSet resultSetAuthorBooks = utilities.QueryDbpedia(utilities.QueryAuthorBooks(authorLink));
+                SparqlResultSet resultSetAuthorDetails = Utilities.QueryDbpedia(Utilities.QueryAuthorDetails(authorLink));
+                SparqlResultSet resultSetAuthorBooks = Utilities.QueryDbpedia(Utilities.QueryAuthorBooks(authorLink));
 
                 if (!resultSetAuthorDetails.IsEmpty && !resultSetAuthorBooks.IsEmpty)
                 {
@@ -63,70 +60,71 @@ namespace SPARQL_Application.Classes
                 }
             }
         }
+
         private void LoopValuesToDatabase(SparqlResultSet resultSetAuthorDetails, SparqlResultSet resultSetAuthorBooks)
         {
-            if (!(resultSetAuthorDetails.IsEmpty && resultSetAuthorBooks.IsEmpty))
+            if (resultSetAuthorDetails.IsEmpty && resultSetAuthorBooks.IsEmpty)
+                return;
+            string authorLink = resultSetAuthorDetails.Last()["authorLink"].ToString();
+            string authorName = resultSetAuthorDetails.Last()["authorName"].ToString();
+            string placeOfBirthLink = resultSetAuthorDetails.Last()["placeOfBirthLink"].ToString();
+            string placeOfBirth = resultSetAuthorDetails.Last()["PlaceOfBirth"].ToString();
+            string stringLatitude = resultSetAuthorDetails.Last().Value("latitude").ToString(); // ["latitude"]["value"].ToString());
+            string stringLongitude = resultSetAuthorDetails.Last().Value("longitude").ToString();
+
+            //Convert latitude and longitude to float
+
+            float latitude = float.Parse(Utilities.NumberConverter(stringLatitude));
+            float longitude = float.Parse(Utilities.NumberConverter(stringLongitude));
+
+            if (authorName.Length > 3 && placeOfBirth.Length > 3)
             {
-                String authorLink = resultSetAuthorDetails.Last()["authorLink"].ToString();
-                String authorName = resultSetAuthorDetails.Last()["authorName"].ToString();
-                String placeOfBirthLink = resultSetAuthorDetails.Last()["placeOfBirthLink"].ToString();
-                String placeOfBirth = resultSetAuthorDetails.Last()["PlaceOfBirth"].ToString();
-                String stringLatitude = resultSetAuthorDetails.Last().Value("latitude").ToString(); // ["latitude"]["value"].ToString());
-                String stringLongitude = resultSetAuthorDetails.Last().Value("longitude").ToString();
-
-                //Convert latitude and longitude to float
-
-                float latitude = float.Parse(utilities.NumberConverter(stringLatitude));
-                float longitude = float.Parse(utilities.NumberConverter(stringLongitude));
-
-                if (authorName.Length > 3 && placeOfBirth.Length > 3)
-                {
-                    authorName = authorName.Substring(0, authorName.Length -3);
-                    placeOfBirth = placeOfBirth.Substring(0, placeOfBirth.Length -3);
-                }
-
-                //Create a list of all the authors books
-                List<BookDetails> authorBooks = new List<BookDetails>();
-                foreach (SparqlResult result in resultSetAuthorBooks)
-                {
-                    String bookLink = result["bookLink"].ToString();
-                    String name = result["bookName"].ToString();
-                    String bookAbstract = result["bookAbstract"].ToString();
-                    String stringNumberOfPages = "";
-                    if (!(result["numberOfPages"] == null))
-                    {
-                        stringNumberOfPages = result["numberOfPages"].ToString();
-                    }
-                    String comment = result["comment"].ToString();
-
-                    //Remove @en from the string
-                    name = utilities.RemoveLast3Cahracters(name);
-                    bookAbstract = utilities.RemoveLast3Cahracters(bookAbstract);
-                    comment = utilities.RemoveLast3Cahracters(comment);
-
-                    //Convert numberOfPages to int
-                    int numberOfPages = 0;
-                    if (!(result["numberOfPages"] == null))
-                    {
-                        numberOfPages = int.Parse(utilities.NumberConverter(stringNumberOfPages));
-                    }
-
-                    //Create a BookDetails object
-                    BookDetails book = new BookDetails
-                    {
-                        BookLink = bookLink,
-                        Name = name,
-                        Abstract = bookAbstract,
-                        NumberOfPages = numberOfPages,
-                        Comment = comment
-                    };
-                    authorBooks.Add(book);
-                }
-
-                //
-                AddToDatabase(authorLink, authorName, placeOfBirthLink, placeOfBirth, latitude, longitude, authorBooks);
+                authorName = authorName.Substring(0, authorName.Length - 3);
+                placeOfBirth = placeOfBirth.Substring(0, placeOfBirth.Length - 3);
             }
+
+            //Create a list of all the authors books
+            List<BookDetails> authorBooks = new List<BookDetails>();
+            foreach (SparqlResult result in resultSetAuthorBooks)
+            {
+                string bookLink = result["bookLink"].ToString();
+                string name = result["bookName"].ToString();
+                string bookAbstract = result["bookAbstract"].ToString();
+                string stringNumberOfPages = "";
+                if (result["numberOfPages"] != null)
+                {
+                    stringNumberOfPages = result["numberOfPages"].ToString();
+                }
+                string comment = result["comment"].ToString();
+
+                //Remove @en from the string
+                name = Utilities.RemoveLast3Cahracters(name);
+                bookAbstract = Utilities.RemoveLast3Cahracters(bookAbstract);
+                comment = Utilities.RemoveLast3Cahracters(comment);
+
+                //Convert numberOfPages to int
+                int numberOfPages = 0;
+                if (result["numberOfPages"] != null)
+                {
+                    numberOfPages = int.Parse(Utilities.NumberConverter(stringNumberOfPages));
+                }
+
+                //Create a BookDetails object
+                BookDetails book = new BookDetails
+                {
+                    BookLink = bookLink,
+                    Name = name,
+                    Abstract = bookAbstract,
+                    NumberOfPages = numberOfPages,
+                    Comment = comment
+                };
+                authorBooks.Add(book);
+            }
+
+            //
+            AddToDatabase(authorLink, authorName, placeOfBirthLink, placeOfBirth, latitude, longitude, authorBooks);
         }
+
         private void AddToDatabase(String authorLink, String authorName, String placeOfBirthLink, String placeOfBirth, float latitude, float longitude, List<BookDetails> authorBooks)
         {
             //Create new BookName object
@@ -141,16 +139,17 @@ namespace SPARQL_Application.Classes
                 AuthorBooks = authorBooks
             };
             //Add the new object to the BookName collection
-            db.authorDetailsTable.Add(book);
+            _db.AuthorDetailsTable.Add(book);
 
             //Submit changes to database
             try
             {
-                db.SaveChanges();
+                _db.SaveChanges();
             }
             catch (Exception e)
             {
                 Console.WriteLine("error adding to database");
+                Console.WriteLine(e);
             }
         }
     }

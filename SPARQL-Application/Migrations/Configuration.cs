@@ -5,7 +5,7 @@ namespace SPARQL_Application.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<SPARQL_Application.Models.BookDBContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<SPARQL_Application.Models.BookDbContext>
     {
         public Configuration()
         {
@@ -13,7 +13,7 @@ namespace SPARQL_Application.Migrations
             ContextKey = "SPARQL_Application.Models.BookDBContext";
         }
 
-        protected override void Seed(SPARQL_Application.Models.BookDBContext context)
+        protected override void Seed(SPARQL_Application.Models.BookDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

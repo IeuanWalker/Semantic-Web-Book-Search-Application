@@ -3,7 +3,7 @@ using VDS.RDF.Query;
 
 namespace SPARQL_Application.Classes
 {
-    public abstract class utilities
+    public static class Utilities
     {
         //Creates the multiple different Sparql queries
         public static string QueryUserSearchBookName(string userSearch)
@@ -21,9 +21,11 @@ namespace SPARQL_Application.Classes
                     "FILTER ( regex (str(?bookName), '" + userSearch + "', 'i') ). " +
                     "FILTER (lang(?author) = 'en') " +
                     "FILTER (lang(?bookName) = 'en') " +
-                "} "; ;
+                "} ";
+
             return query;
         }
+
         public static string QueryAuthorBooks(string authorLink)
         {
             String query =
@@ -44,6 +46,7 @@ namespace SPARQL_Application.Classes
                 "}";
             return query;
         }
+
         public static string QueryAuthorDetails(string authorLink)
         {
             String query =
@@ -81,22 +84,28 @@ namespace SPARQL_Application.Classes
         //Method to remove the @en at the end of strings
         public static string RemoveLast3Cahracters(string word)
         {
+            string result = String.Empty;
+
             if (word.Length > 3)
             {
-                word = word.Substring(0, word.Length - 3);
+                result = word.Substring(0, word.Length - 3);
             }
-            return word;
+
+            return result;
         }
 
         //Numbers received from dbpedia are not purely number it also a link. This method remove the link
         public static string NumberConverter(string word)
         {
-            if (!(word == null ||word == "")){
+            string result = String.Empty;
+
+            if (!string.IsNullOrEmpty(word))
+            {
                 int index = word.IndexOf("^", StringComparison.Ordinal);
-                word = word.Substring(0, index);
+                result = word.Substring(0, index);
             }
 
-            return word;
+            return result;
         }
     }
 }

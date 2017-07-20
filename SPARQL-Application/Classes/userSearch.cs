@@ -7,21 +7,21 @@ namespace SPARQL_Application.Classes
 {
     public class UserSearch
     {
-        private readonly BookDBContext db = new BookDBContext();
-        private int minutesOld = -2;
+        private readonly BookDbContext _db = new BookDbContext();
+        private readonly int _minutesOld = -2;
 
-        public void search(string searchString)
+        public void Search(string searchString)
         {
             //Checks if item has been searched before
-            if (db.bookNameTable.Any(o => o.SearchedFor.Equals(searchString)))
+            if (_db.BookNameTable.Any(o => o.SearchedFor.Equals(searchString)))
             {
-                var queryDate = from BNT in db.bookNameTable
-                                where BNT.SearchedFor == searchString
-                                select BNT;
+                var queryDate = from bnt in _db.BookNameTable
+                                where bnt.SearchedFor == searchString
+                                select bnt;
 
                 var dateTimeNow = DateTime.Now;
-                var dateTimeOldest = dateTimeNow.AddMinutes(minutesOld);
-                var dateTimeSearch = queryDate.FirstOrDefault().dataAndTime;
+                var dateTimeOldest = dateTimeNow.AddMinutes(_minutesOld);
+                var dateTimeSearch = queryDate.FirstOrDefault().DataAndTime;
 
                 //Check the date
                 if (dateTimeSearch <= dateTimeNow && dateTimeSearch >= dateTimeOldest)
@@ -32,15 +32,15 @@ namespace SPARQL_Application.Classes
                 {
                     //Information in database is too old, need newer information
                     //Delete current information
-                    var books = from b in db.bookNameTable select b;
+                    var books = from b in _db.BookNameTable select b;
                     books = books.Where(s => s.SearchedFor.Equals(searchString));
                     foreach (BookUserSearch i in books)
                     {
-                        db.bookNameTable.Remove(db.bookNameTable.Find(i.ID));
+                        _db.BookNameTable.Remove(_db.BookNameTable.Find(i.Id));
                     }
                     try
                     {
-                        db.SaveChanges();
+                        _db.SaveChanges();
                     }
                     catch (Exception e)
                     {
@@ -49,7 +49,7 @@ namespace SPARQL_Application.Classes
                     }
 
                     //Request new information
-                    SparqlResultSet resultSet = utilities.QueryDbpedia(utilities.QueryUserSearchBookName(searchString));
+                    SparqlResultSet resultSet = Utilities.QueryDbpedia(Utilities.QueryUserSearchBookName(searchString));
                     LoopValuesToDatabase(searchString, resultSet);
                 }
                 else if (dateTimeSearch > dateTimeNow)
@@ -60,7 +60,7 @@ namespace SPARQL_Application.Classes
             else
             {
                 //Not in the database, send query and add to database
-                SparqlResultSet resultSet = utilities.QueryDbpedia(utilities.QueryUserSearchBookName(searchString));
+                SparqlResultSet resultSet = Utilities.QueryDbpedia(Utilities.QueryUserSearchBookName(searchString));
                 LoopValuesToDatabase(searchString, resultSet);
             }
         }
@@ -75,8 +75,8 @@ namespace SPARQL_Application.Classes
                 String author = result["author"].ToString();
 
                 //remove the @en
-                name = utilities.RemoveLast3Cahracters(name);
-                author = utilities.RemoveLast3Cahracters(author);
+                name = Utilities.RemoveLast3Cahracters(name);
+                author = Utilities.RemoveLast3Cahracters(author);
 
                 AddToDatabase(searchString, name, authorLink, author, bookLink);
             }
@@ -95,12 +95,12 @@ namespace SPARQL_Application.Classes
             };
 
             //Add the new object to the BookName collection
-            db.bookNameTable.Add(book);
+            _db.BookNameTable.Add(book);
 
             //Submit changes to database
             try
             {
-                db.SaveChanges();
+                _db.SaveChanges();
             }
             catch (Exception e)
             {

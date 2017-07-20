@@ -2,10 +2,10 @@
 
 namespace SPARQL_Application.Models
 {
-    public class BookDBContext : DbContext
+    public class BookDbContext : DbContext
     {
-        public DbSet<BookUserSearch> bookNameTable { get; set; }
-        public DbSet<BookDetails> bookDetailsTable { get; set; }
-        public DbSet<BookAuthorDetails> authorDetailsTable { get; set; }
+        public DbSet<BookUserSearch> BookNameTable { get; set; }
+        public DbSet<BookDetails> BookDetailsTable { get; set; }
+        public DbSet<BookAuthorDetails> AuthorDetailsTable { get; set; }
     }
 }

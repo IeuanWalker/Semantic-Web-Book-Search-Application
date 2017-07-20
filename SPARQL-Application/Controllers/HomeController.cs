@@ -6,18 +6,19 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using SPARQL_Application.Classes;
 
 namespace SPARQL_Application.Controllers
 {
     public class HomeController : Controller
     {
         //Access to database
-        private readonly BookDBContext db = new BookDBContext();
+        private readonly BookDbContext _db = new BookDbContext();
 
         //Access to different search methods
-        private Classes.UserSearch userSearch = new Classes.UserSearch();
-        private Classes.authorDetailsSearch authorSearch = new Classes.authorDetailsSearch();
+        private UserSearch _userSearch = new UserSearch();
 
+        private AuthorDetailsSearch _authorSearch = new AuthorDetailsSearch();
 
         //Different page requests
         public async Task<ActionResult> Index(string id = null, int page = 1, int pageSize = 10)
@@ -27,12 +28,12 @@ namespace SPARQL_Application.Controllers
             {
                 if (!String.IsNullOrEmpty(id.Trim()))
                 {
-                    userSearch.search(id);
+                    _userSearch.Search(id);
                 }
             }
 
             //LINQ Query to select the book
-            var books = from b in db.bookNameTable select b;
+            var books = from b in _db.BookNameTable select b;
 
             //Filters the books returned to the view by the searched query
             if (!String.IsNullOrEmpty(id))
@@ -44,13 +45,14 @@ namespace SPARQL_Application.Controllers
             }
 
             //Create a list of searched book in date order
-            IEnumerable<BookUserSearch> bookList = await books.OrderByDescending(s => s.dataAndTime).ToListAsync();
+            IEnumerable<BookUserSearch> bookList = await books.OrderByDescending(s => s.DataAndTime).ToListAsync();
 
             //Using pagedList package to add pagination
             PagedList<BookUserSearch> model = new PagedList<BookUserSearch>(bookList, page, pageSize);
 
             return View(model);
         }
+
         public ActionResult AuthorDetails(string authorLink)
         {
             //Checks if the user link has the proper parameters, if not the user will be redirected to the home page
@@ -58,7 +60,7 @@ namespace SPARQL_Application.Controllers
             {
                 if (!String.IsNullOrEmpty(authorLink.Trim()))
                 {
-                   authorSearch.search(authorLink);
+                    _authorSearch.Search(authorLink);
                 }
                 else
                 {
@@ -71,11 +73,12 @@ namespace SPARQL_Application.Controllers
             }
 
             //Creates a list of the author details
-            var details = from b in db.authorDetailsTable select b;
+            var details = from b in _db.AuthorDetailsTable select b;
             details = details.Where(s => s.AuthorLink.Equals(authorLink));
 
             return View(details);
         }
+
         public ActionResult BookDetails(string bookLink, string authorLink)
         {
             //Checks if the user link has the proper parameters, if not the user will be redirected to the home page
@@ -83,7 +86,7 @@ namespace SPARQL_Application.Controllers
             {
                 if (!String.IsNullOrEmpty(authorLink.Trim()))
                 {
-                    authorSearch.search(authorLink);
+                    _authorSearch.Search(authorLink);
                 }
                 else
                 {
@@ -96,7 +99,7 @@ namespace SPARQL_Application.Controllers
             }
 
             //Creates a list of the book details
-            var details = from b in db.bookDetailsTable select b;
+            var details = from b in _db.BookDetailsTable select b;
             details = details.Where(s => s.BookLink.Equals(bookLink));
 
             return View(details);
@@ -104,11 +107,12 @@ namespace SPARQL_Application.Controllers
 
         ~HomeController()
         {
-            db.Dispose();
+            _db.Dispose();
         }
+
         public new void Dispose()
         {
-            db.Dispose();
+            _db.Dispose();
         }
     }
 }

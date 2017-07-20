@@ -38,7 +38,7 @@ else
                 <tr>
                     <td class="hoverEffect">@Html.ActionLink(@item.Name, "BookDetails", new { bookLink = @item.BookLink, authorLink = @item.AuthorLink})</td>
                     <td class="hoverEffect">@Html.ActionLink(@item.Author, "AuthorDetails", new { authorLink = @item.AuthorLink})</td>
-                    <td>@item.dataAndTime</td>
+                    <td>@item.DataAndTime</td>
                 </tr>
             }
         </table>

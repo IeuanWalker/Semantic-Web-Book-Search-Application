@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<SPARQL_Application.Models.BookDetails>
 
-@if(Model == null || Model.Count() <= 0){
+@if (Model == null || !Model.Any())
+{
     ViewBag.Title = "Books Details not found";
 }
 else
@@ -8,12 +9,9 @@ else
     ViewBag.Title = "Book: " + Model.First().Name;
 }
 
-
-
-
 <div class="container">
     <div class="bookDetails">
-        @if (Model == null || Model.Count() <= 0)
+        @if (Model == null || !Model.Any())
         {
             <p>Ooops sorry something went wrong :/. Could not find information on this book.</p>
         }
@@ -24,12 +22,12 @@ else
                 <header class="bookDetailsHeader">
                     <div>
                         <h1>@item.Name</h1>
-                        <small>Written by <span class="hoverEffect">@Html.ActionLink(@item.AuthorDetails.AuthorName, "authorDetails", new { authorLink = @item.AuthorDetails.AuthorLink })</span></small>
+                        <small>Written by <span class="hoverEffect">@Html.ActionLink(@item.AuthorDetails.AuthorName, "AuthorDetails", new { authorLink = @item.AuthorDetails.AuthorLink })</span></small>
                     </div>
                 </header>
                 <p>
-                    <strong>@item.Name</strong> was written by <strong class="hoverEffect">@Html.ActionLink(@item.AuthorDetails.AuthorName, "authorDetails", new { authorLink = @item.AuthorDetails.AuthorLink })</strong>
-                    @if (!(@item.NumberOfPages == 0))
+                    <strong>@item.Name</strong> was written by <strong class="hoverEffect">@Html.ActionLink(@item.AuthorDetails.AuthorName, "AuthorDetails", new { authorLink = @item.AuthorDetails.AuthorLink })</strong>
+                    @if (item.NumberOfPages != 0)
                     {
                         <text>and it has </text><strong>@item.NumberOfPages</strong> <text>pages.</text>
                     }
@@ -59,7 +57,7 @@ else
                     }
                 </table>
                 <div class="lastUpdated">
-                    <p>Last updated: @item.AuthorDetails.dataAndTime</p>
+                    <p>Last updated: @item.AuthorDetails.DataAndTime</p>
                 </div>
             }
         }
