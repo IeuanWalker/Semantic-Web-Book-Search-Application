@@ -1,4 +1,7 @@
 # Semantic Web Book Search Application
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/09e277a338b743c698269112489c8aeb)](https://www.codacy.com/app/ieuan.walker007/Semantic-Web-Book-Search-Application?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IeuanWalker/Semantic-Web-Book-Search-Application&amp;utm_campaign=Badge_Grade)
+
 This is a Project from University where i created a web application that sources data using semantic web technologies.
 
 The objective of this assignment is to design and develop a web-based application with a database using ASP.NET and semantic web technologies. 
